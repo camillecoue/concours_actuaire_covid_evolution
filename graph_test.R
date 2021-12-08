@@ -15,17 +15,14 @@ library(gapminder)
 library(gganimate)
 library(av)
 library(gifski)
+library(plotly)
 theme_set(theme_bw())
 
 # The dataset is provided in the gapminder library
 data <- table_dep_finale8 %>% filter(Annee=="2021") %>% dplyr::select(-Annee)
 
-# Make a ggplot, but add frame=year: one image per year
-ggplot(data, aes(taux_vaccin, tx_hosp, size = densite, color = nomReg)) +
-  geom_point() +
-  scale_x_log10() +
-  theme_bw() +
-  # gganimate specific bits:
-  labs(title = 'Semaine: {frame_time}', x = 'Taux vaccin', y = 'Taux hospi') +
-  transition_time(semaine) +
-  ease_aes('linear')
+p <- ggplot(data, aes(taux_vaccin, tx_hosp, color = nomReg)) +
+  geom_point(aes(size = densite, frame = semaine, ids = nomReg)) +
+  scale_x_log10()
+
+ggplotly(p)
