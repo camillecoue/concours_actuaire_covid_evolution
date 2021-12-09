@@ -1,49 +1,126 @@
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
+install.packages("dplyr")
+install.packages("hrbrthemes")
+#installed.packages("viridis")
+install.packages("gifski")
+install.packages("av")
+#install.packages("gganimate")
+#install.packages("gapminder")
+install.packages("ggplot2")
+install.packages("plotly")
+library(ggplot2)
+library(dplyr)
+library(hrbrthemes)
+library(viridis)
+#library(gapminder)
+#library(gganimate)
+library(av)
+library(gifski)
+library(plotly)
+theme_set(theme_bw())
+
+
 
 library(shiny)
 
-# Define UI for application that draws a histogram
-ui <- fluidPage(
 
-    # Application title
-    titlePanel("Old Faithful Geyser Data"),
-
-    # Sidebar with a slider input for number of bins 
-    sidebarLayout(
+ui<- fluidPage(
+ titlePanel("Covid-19 Evolution "),
+  
+      sidebarLayout(
         sidebarPanel(
-            sliderInput("bins",
-                        "Number of bins:",
-                        min = 1,
-                        max = 50,
-                        value = 30)
-        ),
+             
+            tabsetPanel(
+      
+              tabPanel("Département",
+                       
+                        selectInput("variable", "Choisir un département :",
+                        c(as.character(dpt)),
+                          ),
+                       sliderInput(inputId = "slider",
+                         "Période :",
+                         min = as.Date("2020-03-18"),
+                         max = as.Date("2021-11-28"),
+                         value =  c(as.Date("2020-03-18"), as.Date("2021-11-28")),
+                         timeFormat = "%d %b %Y",
+                         width = '100%'
+                       ), 
+                       sliderInput(inputId = "num", 
+                                   label = "choose a number",
+                                   value = 25, min = 10, max = 90),
+                       
+              ),
+               tabPanel("Région", 
+                      # plotOutput("hist"),
+                     
+                       selectInput("variable", "Choisir un département :",
+                                 c(as.character(dpt)),
+                     ),
+                     sliderInput(
+                       "slider",
+                       "Période :",
+                       min = as.Date("2020-03-18"),
+                       max = as.Date("2021-11-28"),
+                       value =  c(as.Date("2020-03-18"), as.Date("2021-11-28")),
+                       timeFormat = "%d %b %Y",
+                       width = '100%'
+                     ),
+                     sliderInput(inputId = "num", 
+                                 label = "choose a number",
+                                 value = 25, min = 10, max = 90),
+                     
+                    ), 
+               tabPanel("Classe d'âge par région", 
+                  #  plotOutput(outputId="hist"),
+                     
+                     selectInput("variable", "Choisir un département :",
+                                 c(as.character(dpt)),
+                     ),
+                     sliderInput(
+                       "slider",
+                       "Période :",
+                       min = as.Date("2020-03-18"),
+                       max = as.Date("2021-11-28"),
+                       value =  c(as.Date("2020-03-18"), as.Date("2021-11-28")),
+                       timeFormat = "%d %b %Y",
+                       width = '100%'
+                     ),
+                     ),
+                       
+                     sliderInput(inputId = "num", 
+                      label = "choose a number",
+                      value = 25, min = 10, max = 90),
+                     
+                 
+            )
+),
 
-        # Show a plot of the generated distribution
-        mainPanel(
-           plotOutput("distPlot")
-        )
-    )
+mainPanel(
+  plotOutput(outputId="plot")
+  #tabsetPanel(
+    
+   # tabPanel("Département", plotOutput(outputId="hist"))
+          
+    
+    #tabPanel("Région", plotOutput(outputId="hist"))
+             
+    
+    #tabPanel("Classe d'âge par région", plotOutput(outputId="hist")
+
+  
+
+))
 )
 
-# Define server logic required to draw a histogram
-server <- function(input, output) {
 
-    output$distPlot <- renderPlot({
-        # generate bins based on input$bins from ui.R
-        x    <- faithful[, 2]
-        bins <- seq(min(x), max(x), length.out = input$bins + 1)
-
-        # draw the histogram with the specified number of bins
-        hist(x, breaks = bins, col = 'darkgray', border = 'white')
-    })
+server <- function(input, output){
+  
+  output$plot <- renderPlot({
+    p <- ggplot(data, aes(taux_vaccin_reg, tx_hosp_reg, color = nomReg)) +
+      geom_point(aes(size = densite_reg, frame = semaine, ids = nomReg)) +
+      labs(title = 'Titre', x = 'Taux vaccin', y = 'Taux hospi') +
+      ease_aes('linear')
+})
 }
 
-# Run the application 
 shinyApp(ui = ui, server = server)
+
