@@ -19,10 +19,11 @@ library(plotly)
 theme_set(theme_bw())
 
 # The dataset is provided in the gapminder library
-data <- table_dep_finale8 %>% filter(Annee=="2021") %>% dplyr::select(-Annee)
+data <- table_regions %>% filter(Annee=="2021") %>% dplyr::select(-Annee)
 
-p <- ggplot(data, aes(taux_vaccin, tx_hosp, color = nomReg)) +
-  geom_point(aes(size = densite, frame = semaine, ids = nomReg)) +
-  scale_x_log10()
+p <- ggplot(data, aes(taux_vaccin_reg, tx_hosp_reg, color = nomReg)) +
+  geom_point(aes(size = densite_reg, frame = semaine, ids = nomReg)) +
+  labs(title = 'Titre', x = 'Taux vaccin', y = 'Taux hospi') +
+  ease_aes('linear')
 
 ggplotly(p)
