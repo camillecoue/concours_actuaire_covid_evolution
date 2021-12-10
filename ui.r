@@ -1,41 +1,80 @@
 library(shiny) 
 
+
+if (interactive()) 
 ui <- fluidPage(
-
-    # Application title
-    titlePanel("Covid evolution"),
-
-    # Sidebar with a slider input for number of bins 
-    sidebarLayout(
-        sidebarPanel(
-            sliderInput("bins",
-                        "Number of bins:",
-                        min = 1,
-                        max = 50,
-                        value = 30)
-        ),
-
-        # Show a plot of the generated distribution
-        mainPanel(
-         
-            tabsetPanel(id = "tabs",
-                        tabPanel("Hello", "This is the hello tab"),
-                        tabPanel("Foo", "This is the foo tab"),
-                        tabPanel("Bar", "This is the bar tab")
-            ),
-            plotOutput("distPlot"),
-         
-           ))
-    )
+  
+  titlePanel("Covid Evolution"),
+  
+ # sidebarLayout(),
     
+  #  sidebarPanel( ),
+    
+    mainPanel(
+
+      
+      tabsetPanel(
+        tabPanel("Département",
+                 plotOutput("hist"), 
+                 
+                 selectInput("variable", "Choisir un département :",
+                             c(as.character(dpt)),
+                                               ),
+                 sliderInput(
+                   "slider",
+                   "Période :",
+                   min = as.Date("2020-03-18"),
+                   max = as.Date("2021-11-28"),
+                   value =  c(as.Date("2020-03-18"), as.Date("2021-11-28")),
+                   timeFormat = "%d %b %Y",
+                   width = '100%'
+                 ),
+                
+                 ),
+        tabPanel("Région", 
+                 plotOutput("plot"),
+                 
+                 selectInput("variable", "Choisir un département :",
+                             c(as.character(dpt)),
+                 ),
+                 sliderInput(
+                   "slider",
+                   "Période :",
+                   min = as.Date("2020-03-18"),
+                   max = as.Date("2021-11-28"),
+                   value =  c(as.Date("2020-03-18"), as.Date("2021-11-28")),
+                   timeFormat = "%d %b %Y",
+                   width = '100%'
+                 ),
+                 
+                 ), 
+        tabPanel("Classe d'âge par région", 
+                 plotOutput(outputId="plot"),
+                 
+                 selectInput("variable", "Choisir un département :",
+                             c(as.character(dpt)),
+                 ),
+                 sliderInput(
+                   "slider",
+                   "Période :",
+                   min = as.Date("2020-03-18"),
+                   max = as.Date("2021-11-28"),
+                   value =  c(as.Date("2020-03-18"), as.Date("2021-11-28")),
+                   timeFormat = "%d %b %Y",
+                   width = '100%'
+                 ),
+                 )
+      
+    ),
    
-     selectInput("variable", "Choisir un département :",
-                c(as.character(dpt)),
-    tableOutput("data")
-), 
-selectInput("variable", "Variable:",
-            c("Cylinders" = "cyl",
-              "Transmission" = "am",
-              "Gears" = "gear")),
-tableOutput("data")
+   textOutput(outputId = "desc"),
+    tags$a(href = "https://www.data.gouv.fr/fr/datasets/donnees-hospitalieres-relatives-a-lepidemie-de-covid-19", "Source: https://www.data.gouv.fr/fr/datasets/donnees-hospitalieres-relatives-a-lepidemie-de-covid-19", target = "_blank")
+    )
 )
+  
+    
+  
+
+   
+
+
